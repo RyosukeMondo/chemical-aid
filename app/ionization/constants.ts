@@ -6,6 +6,7 @@ export const COLORS: Record<string, string> = {
   O: "#ef4444", // red-500 for oxygen
   N: "#2563eb", // blue-600 for nitrogen
   S: "#f59e0b", // amber-500 for sulfur
+  P: "#a78bfa", // violet-400 for phosphorus
   bond: "#94a3b8",
   e: "#fef08a",
   arrow: "#fca5a5",
@@ -28,7 +29,10 @@ export type CompoundKey =
   | "HNO3"
   | "CH3COOH"
   | "NH3"
-  | "CO2+H2O";
+  | "CO2+H2O"
+  | "H3PO4"
+  | "HClO3"
+  | "NaHCO3";
 
 export type IonSpec = { label: string; charge: number; count: number };
 
@@ -41,6 +45,7 @@ export const ELEMENT_RADII: Record<string, number> = {
   O: 0.62,
   N: 0.56,
   S: 0.7,
+  P: 0.68,
 };
 
 export const COMPOUND_LIBRARY: Record<CompoundKey, IonSpec[] | null> = {
@@ -81,5 +86,17 @@ export const COMPOUND_LIBRARY: Record<CompoundKey, IonSpec[] | null> = {
   "CO2+H2O": [
     { label: "H+", charge: +1, count: 2 },
     { label: "CO3 2-", charge: -2, count: 1 },
+  ],
+  H3PO4: [
+    { label: "H+", charge: +1, count: 3 },
+    { label: "PO4 3-", charge: -3, count: 1 },
+  ],
+  HClO3: [
+    { label: "H+", charge: +1, count: 1 },
+    { label: "ClO3-", charge: -1, count: 1 },
+  ],
+  NaHCO3: [
+    { label: "Na+", charge: +1, count: 1 },
+    { label: "HCO3-", charge: -1, count: 1 },
   ],
 };

@@ -49,6 +49,9 @@ export default function IonizationPlayground() {
                 <option value="CH3COOH">CH3COOH</option>
                 <option value="NH3">NH3 (aq)</option>
                 <option value="CO2+H2O">CO2 + H2O</option>
+                <option value="H3PO4">H3PO4</option>
+                <option value="HClO3">HClO3</option>
+                <option value="NaHCO3">NaHCO3</option>
               </optgroup>
             </select>
           </div>
