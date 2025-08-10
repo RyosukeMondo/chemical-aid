@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { REACTIONS } from "./ionization/constants";
+import { REACTIONS, getPresetEN } from "./ionization/constants";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { motion } from "framer-motion";
 // Extracted modules
 import DiatomicSceneExt from "./ionization/scenes/DiatomicScene";
-import IonicDissociationScene from "./ionization/scenes/IonicDissociationScene";
+import BinaryIonScene from "./ionization/scenes/BinaryIonScene";
 import { COMPOUND_LIBRARY as LIB, CompoundKey } from "./ionization/constants";
 import "./ionization/polyfills/canvasRoundRect";
 import { VisualSettingsProvider } from "./ionization/VisualSettingsContext";
@@ -23,7 +23,7 @@ export default function IonizationPlayground() {
   const [viewMode, setViewMode] = useState<"ball-and-stick" | "cpk">("ball-and-stick");
   const [cpkScale, setCpkScale] = useState(0.4);
   const isDiatomic = compound === "HCl" || compound === "NaCl";
-  const presetEN = compound === "HCl" ? 0.9 : compound === "NaCl" ? 2.1 : 2.0;
+  const presetEN = getPresetEN(compound);
   return (
     <div className="w-full h-full grid grid-cols-1 lg:grid-cols-5 gap-4 p-4 bg-slate-50">
       <div className="lg:col-span-2 shadow-xl bg-white rounded-2xl border border-slate-200">
@@ -77,7 +77,7 @@ export default function IonizationPlayground() {
               value={deltaEN}
               onChange={(e) => setDeltaEN(parseFloat(e.target.value))}
               className="w-full accent-slate-600"
-              disabled={!isDiatomic}
+              disabled={false}
             />
             <div className="flex justify-between text-xs text-slate-500">
               <span>共有結合</span>
@@ -254,7 +254,7 @@ export default function IonizationPlayground() {
                   showWater={showWater}
                 />
               ) : (
-                <IonicDissociationScene ions={LIB[compound]!} showWater={showWater} />
+                <BinaryIonScene ions={LIB[compound]!} deltaEN={deltaEN} ionize={ionize} showWater={showWater} />
               )}
               <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.1, 0]} receiveShadow>
                 <planeGeometry args={[30, 30]} />

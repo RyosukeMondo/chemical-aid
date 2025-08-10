@@ -41,6 +41,33 @@ export const ION_COLORS = {
   poly: "#22c55e",
 };
 
+// Preset electronegativity differences (ΔEN) used as defaults per compound
+// Values are pedagogical approximations to drive interaction consistency.
+export const PRESET_EN: Partial<Record<CompoundKey, number>> = {
+  HCl: 0.9,
+  NaCl: 2.1,
+  // strong base salts / hydroxides
+  NaOH: 2.1,
+  "Ba(OH)2": 1.3,
+  "Ca(OH)2": 1.0,
+  // strong/weak acids
+  H2SO4: 1.9,
+  HNO3: 1.7,
+  CH3COOH: 0.9,
+  NH3: 0.9, // interacts with H2O to form NH4+ + OH-
+  "CO2+H2O": 1.0,
+  H3PO4: 1.6,
+  HClO3: 1.6,
+  NaHCO3: 1.9,
+  Na3PO3: 1.9,
+  NaNO2: 1.9,
+  HClO4: 2.0,
+};
+
+export function getPresetEN(compound: CompoundKey): number {
+  return PRESET_EN[compound] ?? 2.0;
+}
+
 export type CompoundKey =
   | "HCl"
   | "NaCl"
