@@ -44,6 +44,7 @@ export default function BinaryIonScene({
   const catPos = new THREE.Vector3(-separation / 2, 0, 0);
   const anPos = new THREE.Vector3(separation / 2, 0, 0);
 
+  const showCharge = deltaEN >= 1;
   const renderSide = (spec: IonSpec, isCation: boolean, position: THREE.Vector3) => {
     const labelCompact = spec.label.replace(/\s/g, "");
     const poly = isPolyatomic(labelCompact);
@@ -51,11 +52,11 @@ export default function BinaryIonScene({
       const el = parseElementFromLabel(labelCompact);
       const allowed = new Set(["H", "Cl", "Na", "C", "O"]);
       if (el && allowed.has(el)) {
-        return <ElementAtom element={el as "H" | "Cl" | "Na" | "C" | "O"} position={[position.x, position.y, position.z]} charge={spec.charge} />;
+        return <ElementAtom element={el as "H" | "Cl" | "Na" | "C" | "O"} position={[position.x, position.y, position.z]} charge={spec.charge} showCharge={showCharge} />;
       }
     }
     // Fallback/polyatomic: use IonParticle (handles molecule rendering + label)
-    return <IonParticle position={position} spec={spec} />;
+    return <IonParticle position={position} spec={spec} showCharge={showCharge} />;
   };
 
   // Generate clustered positions around a center for duplicated ions on each side

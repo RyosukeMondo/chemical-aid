@@ -9,12 +9,14 @@ export default function ElementAtom({
   radius = ELEMENT_RADII[element],
   charge = 0,
   label,
+  showCharge = true,
 }: {
   element: "H" | "Cl" | "Na" | "C" | "O";
   position?: [number, number, number];
   radius?: number;
   charge?: number;
   label?: string;
+  showCharge?: boolean;
 }) {
   const color = COLORS[element];
   return (
@@ -23,7 +25,7 @@ export default function ElementAtom({
         <sphereGeometry args={[radius, 48, 48]} />
         <meshStandardMaterial color={color} metalness={0.2} roughness={0.5} />
       </mesh>
-      <BillboardSpriteLabel text={`${element}${charge > 0 ? "+" : charge < 0 ? "−" : ""}`} />
+      <BillboardSpriteLabel text={`${element}${showCharge ? (charge > 0 ? "+" : charge < 0 ? "−" : "") : ""}`} />
       {label ? <BillboardSpriteLabel text={label} offset={[0, -radius - 0.3, 0]} small /> : null}
     </group>
   );
