@@ -6,27 +6,19 @@ import ElectronPairDots from "../../components/ElectronPairDots";
 import { COLORS, ELEMENT_RADII, VDW_RADII } from "../../constants";
 import { useVisualSettings } from "../../VisualSettingsContext";
 
-// Tetrahedral phosphate PO4^3-
-export default function MoleculePO4() {
+// Phosphite PO3^3- : trigonal pyramidal around P; depict resonance across P–O
+export default function MoleculePO3() {
   const { bondScale, viewMode, cpkScale } = useVisualSettings();
   const P_RADIUS = viewMode === "cpk" ? VDW_RADII["P"] * cpkScale : ELEMENT_RADII["P"];
   const O_RADIUS = viewMode === "cpk" ? VDW_RADII["O"] * cpkScale : ELEMENT_RADII["O"];
-  const R0 = 1.55;
+  const R0 = 1.6;
   const R = viewMode === "cpk" ? R0 : R0 * bondScale;
 
-  const p = new THREE.Vector3(0, 0, 0);
-  // true tetrahedral directions: corners of a cube (±1, ±1, ±1) with an even number of negatives
-  const dirs = [
-    new THREE.Vector3(1, 1, 1).normalize(),
-    new THREE.Vector3(-1, -1, 1).normalize(),
-    new THREE.Vector3(-1, 1, -1).normalize(),
-    new THREE.Vector3(1, -1, -1).normalize(),
-  ];
-  const o1 = dirs[0].clone().multiplyScalar(R);
-  const o2 = dirs[1].clone().multiplyScalar(R);
-  const o3 = dirs[2].clone().multiplyScalar(R);
-  const o4 = dirs[3].clone().multiplyScalar(R);
-  const oxy = [o1, o2, o3, o4];
+  const p = new THREE.Vector3(0, 0, 0.25); // slight pyramid height
+  const o1 = new THREE.Vector3(R, 0, 0);
+  const o2 = new THREE.Vector3(R * Math.cos((2 * Math.PI) / 3), R * Math.sin((2 * Math.PI) / 3), 0);
+  const o3 = new THREE.Vector3(R * Math.cos((4 * Math.PI) / 3), R * Math.sin((4 * Math.PI) / 3), 0);
+  const oxy = [o1, o2, o3];
 
   return (
     <group>
@@ -36,7 +28,6 @@ export default function MoleculePO4() {
       </mesh>
       {oxy.map((o, i) => (
         <group key={i}>
-          {/* delocalized P–O bonds visualized as partial double */}
           {viewMode === "ball-and-stick" ? <CovalentBond a={p} b={o} order={1.5} resonance /> : null}
           <mesh position={[o.x, o.y, o.z]} castShadow receiveShadow>
             <sphereGeometry args={[O_RADIUS, 48, 48]} />

@@ -1,15 +1,38 @@
 export const COLORS: Record<string, string> = {
-  H: "#e2e8f0",
-  Cl: "#86efac",
-  Na: "#93c5fd",
-  C: "#374151", // slate-700 for carbon
-  O: "#ef4444", // red-500 for oxygen
-  N: "#2563eb", // blue-600 for nitrogen
-  S: "#f59e0b", // amber-500 for sulfur
-  P: "#a78bfa", // violet-400 for phosphorus
+  // CPK color palette
+  H: "#FFFFFF",
+  C: "#909090",
+  N: "#3050F8",
+  O: "#FF0D0D",
+  F: "#90E050",
+  Cl: "#1FF01F",
+  Br: "#A62929",
+  I: "#940094",
+  S: "#FFFF30",
+  P: "#FF8000",
+  Na: "#AB5CF2",
   bond: "#94a3b8",
   e: "#fef08a",
   arrow: "#fca5a5",
+};
+
+export const REACTIONS: Partial<Record<CompoundKey, string[]>> = {
+  HCl: ["HCl(aq) → H+(aq) + Cl-(aq)"],
+  NaCl: ["NaCl(s) → Na+(aq) + Cl-(aq)"],
+  NaOH: ["NaOH(s) → Na+(aq) + OH-(aq)"],
+  "Ba(OH)2": ["Ba(OH)2(s) → Ba2+(aq) + 2 OH-(aq)"],
+  "Ca(OH)2": ["Ca(OH)2(s) → Ca2+(aq) + 2 OH-(aq)"],
+  H2SO4: ["H2SO4(aq) ⇌ H+(aq) + HSO4-(aq)", "HSO4-(aq) ⇌ H+(aq) + SO4 2-(aq)"],
+  HNO3: ["HNO3(aq) → H+(aq) + NO3-(aq)"],
+  CH3COOH: ["CH3COOH(aq) ⇌ CH3COO-(aq) + H+(aq)"],
+  NH3: ["NH3(aq) + H2O(l) ⇌ NH4+(aq) + OH-(aq)"],
+  "CO2+H2O": ["CO2(aq) + H2O(l) ⇌ H2CO3(aq)", "H2CO3(aq) ⇌ HCO3-(aq) + H+(aq)"],
+  H3PO4: ["H3PO4(aq) ⇌ H+(aq) + H2PO4-(aq)", "H2PO4-(aq) ⇌ H+(aq) + HPO4 2-(aq)", "HPO4 2-(aq) ⇌ H+(aq) + PO4 3-(aq)"],
+  HClO3: ["HClO3(aq) → H+(aq) + ClO3-(aq)"],
+  NaHCO3: ["NaHCO3(s) → Na+(aq) + HCO3-(aq)"],
+  Na3PO3: ["Na3PO3(s) → 3 Na+(aq) + PO3 3-(aq)"],
+  NaNO2: ["NaNO2(s) → Na+(aq) + NO2-(aq)"],
+  HClO4: ["HClO4(aq) → H+(aq) + ClO4-(aq)"],
 };
 
 export const ION_COLORS = {
@@ -32,7 +55,10 @@ export type CompoundKey =
   | "CO2+H2O"
   | "H3PO4"
   | "HClO3"
-  | "NaHCO3";
+  | "NaHCO3"
+  | "Na3PO3"
+  | "NaNO2"
+  | "HClO4";
 
 export type IonSpec = { label: string; charge: number; count: number };
 
@@ -46,6 +72,21 @@ export const ELEMENT_RADII: Record<string, number> = {
   N: 0.56,
   S: 0.7,
   P: 0.68,
+};
+
+// CPK van der Waals radii (Å) – used for space-filling view, scaled in components
+export const VDW_RADII: Record<string, number> = {
+  H: 1.2,
+  C: 1.7,
+  N: 1.55,
+  O: 1.52,
+  F: 1.47,
+  P: 1.8,
+  S: 1.8,
+  Cl: 1.75,
+  Br: 1.85,
+  I: 1.98,
+  Na: 2.27,
 };
 
 export const COMPOUND_LIBRARY: Record<CompoundKey, IonSpec[] | null> = {
@@ -98,5 +139,17 @@ export const COMPOUND_LIBRARY: Record<CompoundKey, IonSpec[] | null> = {
   NaHCO3: [
     { label: "Na+", charge: +1, count: 1 },
     { label: "HCO3-", charge: -1, count: 1 },
+  ],
+  Na3PO3: [
+    { label: "Na+", charge: +1, count: 3 },
+    { label: "PO3 3-", charge: -3, count: 1 },
+  ],
+  NaNO2: [
+    { label: "Na+", charge: +1, count: 1 },
+    { label: "NO2-", charge: -1, count: 1 },
+  ],
+  HClO4: [
+    { label: "H+", charge: +1, count: 1 },
+    { label: "ClO4-", charge: -1, count: 1 },
   ],
 };

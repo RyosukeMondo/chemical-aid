@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { REACTIONS } from "./ionization/constants";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { motion } from "framer-motion";
@@ -17,6 +18,10 @@ export default function IonizationPlayground() {
   const [showWater, setShowWater] = useState(true);
   const [showResonanceGlow, setShowResonanceGlow] = useState(true);
   const [showLonePairs, setShowLonePairs] = useState(true);
+  const [bondScale, setBondScale] = useState(1.0);
+  const [angleOffsetDeg, setAngleOffsetDeg] = useState(0);
+  const [viewMode, setViewMode] = useState<"ball-and-stick" | "cpk">("ball-and-stick");
+  const [cpkScale, setCpkScale] = useState(0.4);
   const isDiatomic = compound === "HCl" || compound === "NaCl";
   const presetEN = compound === "HCl" ? 0.9 : compound === "NaCl" ? 2.1 : 2.0;
   return (
@@ -52,6 +57,9 @@ export default function IonizationPlayground() {
                 <option value="H3PO4">H3PO4</option>
                 <option value="HClO3">HClO3</option>
                 <option value="NaHCO3">NaHCO3</option>
+                <option value="Na3PO3">Na3PO3</option>
+                <option value="NaNO2">NaNO2</option>
+                <option value="HClO4">HClO4</option>
               </optgroup>
             </select>
           </div>
@@ -125,6 +133,8 @@ export default function IonizationPlayground() {
               onClick={() => {
                 setDeltaEN(presetEN);
                 setIonize(false);
+                setBondScale(1.0);
+                setAngleOffsetDeg(0);
               }}
             >
               標準に戻す
@@ -135,6 +145,72 @@ export default function IonizationPlayground() {
             >
               {ionize ? "結合へ戻す" : "電離アニメ"}
             </button>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">表示モード</label>
+            <div className="flex gap-2">
+              <button
+                className={`px-3 py-1 rounded-md border text-sm ${viewMode === "ball-and-stick" ? "bg-slate-800 text-white" : "bg-white text-slate-700"}`}
+                onClick={() => setViewMode("ball-and-stick")}
+              >
+                Ball-and-Stick
+              </button>
+              <button
+                className={`px-3 py-1 rounded-md border text-sm ${viewMode === "cpk" ? "bg-slate-800 text-white" : "bg-white text-slate-700"}`}
+                onClick={() => setViewMode("cpk")}
+              >
+                CPK
+              </button>
+            </div>
+          </div>
+
+          {viewMode === "cpk" ? (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">CPK 半径スケール</label>
+              <input
+                type="range"
+                min={0.2}
+                max={0.8}
+                step={0.01}
+                value={cpkScale}
+                onChange={(e) => setCpkScale(parseFloat(e.target.value))}
+                className="w-full accent-slate-600"
+              />
+              <div className="text-xs text-slate-500">{cpkScale.toFixed(2)}×</div>
+            </div>
+          ) : null}
+
+          {viewMode === "ball-and-stick" ? (
+            <>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">結合長スケール (全体)</label>
+                <input
+                  type="range"
+                  min={0.7}
+                  max={1.5}
+                  step={0.01}
+                  value={bondScale}
+                  onChange={(e) => setBondScale(parseFloat(e.target.value))}
+                  className="w-full accent-slate-600"
+                />
+                <div className="text-xs text-slate-500">{bondScale.toFixed(2)}×</div>
+              </div>
+            </>
+          ) : null}
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">角度オフセット (°)</label>
+            <input
+              type="range"
+              min={-20}
+              max={20}
+              step={1}
+              value={angleOffsetDeg}
+              onChange={(e) => setAngleOffsetDeg(parseInt(e.target.value))}
+              className="w-full accent-slate-600"
+            />
+            <div className="text-xs text-slate-500">{angleOffsetDeg}°</div>
           </div>
 
           <div className="text-sm text-slate-700 leading-relaxed bg-white rounded-2xl p-3 shadow-inner border border-slate-200">
@@ -152,13 +228,22 @@ export default function IonizationPlayground() {
               <li>溶媒(水)の双極子がイオンを安定化 (水和) します。</li>
             </ul>
           </div>
+
+          <div className="text-sm text-slate-700 leading-relaxed bg-white rounded-2xl p-3 shadow-inner border border-slate-200">
+            <p className="mb-1">⚗️ 反応式</p>
+            {(REACTIONS[compound] ?? ["（この化合物の反応式は未定義です）"]).map((eq, idx) => (
+              <div key={idx} className="font-mono text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1 mb-1">
+                {eq}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="lg:col-span-3 relative shadow-2xl bg-white rounded-2xl border border-slate-200">
         <div className="p-0 h-[70vh] lg:h-full rounded-2xl overflow-hidden">
           <Canvas camera={{ position: [0, 1.6, 5], fov: 50 }} shadows>
-            <VisualSettingsProvider value={{ showResonanceGlow, showLonePairs }}>
+            <VisualSettingsProvider value={{ showResonanceGlow, showLonePairs, bondScale, angleOffsetDeg, viewMode, cpkScale }}>
               <ambientLight intensity={0.5} />
               <directionalLight position={[5, 6, 5]} intensity={0.9} castShadow />
               {isDiatomic ? (

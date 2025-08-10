@@ -1,0 +1,21 @@
+{
+  "extends": ["next/core-web-vitals"],
+  "overrides": [
+    {
+      "files": ["app/ionization/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-syntax": [
+          "error",
+          {
+            "selector": "JSXAttribute[name.name=/^(color|emissive)$/] > Literal",
+            "message": "Do not use literal colors in JSX. Use COLORS from app/ionization/constants.ts as the single source of truth."
+          },
+          {
+            "selector": "JSXAttribute[name.name=/^(color|emissive)$/] JSXExpressionContainer > Literal",
+            "message": "Do not use literal colors in JSX expressions. Use COLORS from app/ionization/constants.ts as the single source of truth."
+          }
+        ]
+      }
+    }
+  ]
+}

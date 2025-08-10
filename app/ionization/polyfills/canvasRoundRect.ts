@@ -1,4 +1,5 @@
 "use client";
+export {};
 
 // Canvas 2D roundRect polyfill (client-side)
 declare global {
@@ -13,32 +14,45 @@ declare global {
   }
 }
 
+type RoundRectFn = (
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r?: number | number[]
+) => void;
+
+type CtxWithRoundRect = CanvasRenderingContext2D & {
+  roundRect?: RoundRectFn;
+};
+
 if (
   typeof window !== "undefined" &&
-  typeof (CanvasRenderingContext2D as any) !== "undefined" &&
-  !(CanvasRenderingContext2D.prototype as any).roundRect
+  typeof CanvasRenderingContext2D !== "undefined"
 ) {
-  (CanvasRenderingContext2D.prototype as any).roundRect = function (
-    this: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    r: any = 8
-  ) {
-    const ctx = this;
-    const radii = Array.isArray(r) ? r : [r, r, r, r];
-    const [r1, r2, r3, r4] = radii.map((v) => Math.max(0, Math.min(v, Math.min(w, h) / 2)));
-    ctx.beginPath();
-    ctx.moveTo(x + r1, y);
-    ctx.lineTo(x + w - r2, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r2);
-    ctx.lineTo(x + w, y + h - r3);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r3, y + h);
-    ctx.lineTo(x + r4, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r4);
-    ctx.lineTo(x, y + r1);
-    ctx.quadraticCurveTo(x, y, x + r1, y);
-    ctx.closePath();
-  } as any;
+  const proto = CanvasRenderingContext2D.prototype as CtxWithRoundRect;
+  if (!proto.roundRect) {
+    proto.roundRect = function (
+      this: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      r: number | number[] = 8
+    ) {
+      const radiiArr: number[] = Array.isArray(r) ? r : [r, r, r, r];
+      const [r1, r2, r3, r4] = radiiArr.map((v) => Math.max(0, Math.min(v, Math.min(w, h) / 2)));
+      this.beginPath();
+      this.moveTo(x + r1, y);
+      this.lineTo(x + w - r2, y);
+      this.quadraticCurveTo(x + w, y, x + w, y + r2);
+      this.lineTo(x + w, y + h - r3);
+      this.quadraticCurveTo(x + w, y + h, x + w - r3, y + h);
+      this.lineTo(x + r4, y + h);
+      this.quadraticCurveTo(x, y + h, x, y + h - r4);
+      this.lineTo(x, y + r1);
+      this.quadraticCurveTo(x, y, x + r1, y);
+      this.closePath();
+    } as RoundRectFn;
+  }
 }
