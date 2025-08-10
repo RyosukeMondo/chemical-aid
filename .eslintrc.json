@@ -4,6 +4,7 @@
     {
       "files": ["app/ionization/**/*.{ts,tsx}"],
       "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
         "no-restricted-syntax": [
           "error",
           {

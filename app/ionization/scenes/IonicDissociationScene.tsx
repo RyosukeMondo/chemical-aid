@@ -1,6 +1,5 @@
 "use client";
 import React, { useMemo } from "react";
-import * as THREE from "three";
 import { IonSpec } from "../constants";
 import { expandIonSpecs, positionsOnRing } from "../helpers/layout";
 import IonParticle from "../components/IonParticle";
