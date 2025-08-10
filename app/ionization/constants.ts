@@ -2,6 +2,10 @@ export const COLORS: Record<string, string> = {
   H: "#e2e8f0",
   Cl: "#86efac",
   Na: "#93c5fd",
+  C: "#374151", // slate-700 for carbon
+  O: "#ef4444", // red-500 for oxygen
+  N: "#2563eb", // blue-600 for nitrogen
+  S: "#f59e0b", // amber-500 for sulfur
   bond: "#94a3b8",
   e: "#fef08a",
   arrow: "#fca5a5",
@@ -27,6 +31,17 @@ export type CompoundKey =
   | "CO2+H2O";
 
 export type IonSpec = { label: string; charge: number; count: number };
+
+// Visual radii (not physical), to unify atom sizes across scenes
+export const ELEMENT_RADII: Record<string, number> = {
+  H: 0.45,
+  Na: 0.65,
+  Cl: 0.8,
+  C: 0.55,
+  O: 0.62,
+  N: 0.56,
+  S: 0.7,
+};
 
 export const COMPOUND_LIBRARY: Record<CompoundKey, IonSpec[] | null> = {
   HCl: null, // handled by diatomic scene

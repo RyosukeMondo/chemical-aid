@@ -18,7 +18,7 @@ export default function DiatomicScene({
   ionize: boolean;
   showWater: boolean;
 }) {
-  const A = compound === "HCl" ? "H" : "Na";
+  const A: "H" | "Na" = compound === "HCl" ? "H" : "Na";
   const B = "Cl" as const;
   const ionicness = Math.min(1, Math.max(0, deltaEN / 3.5)) * (ionize ? 1 : 0.75);
   const separation = THREE.MathUtils.lerp(2.2, 4.2, ionicness * 0.7);
@@ -32,8 +32,8 @@ export default function DiatomicScene({
       <Bond a={aPos} b={bPos} ionicness={ionicness} />
       <DirectionArrow from={aPos} to={bPos} />
       <group>
-        <ElementAtom element={A as any} position={[aPos.x, aPos.y, aPos.z]} radius={A === "H" ? 0.45 : 0.65} charge={qA} />
-        <ElementAtom element={B} position={[bPos.x, bPos.y, bPos.z]} radius={0.8} charge={qB} />
+        <ElementAtom element={A} position={[aPos.x, aPos.y, aPos.z]} charge={qA} />
+        <ElementAtom element={B} position={[bPos.x, bPos.y, bPos.z]} charge={qB} />
       </group>
       {Array.from({ length: electronCount }).map((_, i) => (
         <OrbitalElectron key={i} center={bPos} radius={0.9 + ((i % 3) * 0.08)} speed={0.8 + ((i % 4) * 0.05)} phase={i * 0.7} />

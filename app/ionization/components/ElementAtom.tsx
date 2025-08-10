@@ -1,16 +1,16 @@
 "use client";
 import React from "react";
-import { COLORS } from "../constants";
+import { COLORS, ELEMENT_RADII } from "../constants";
 import BillboardSpriteLabel from "./BillboardSpriteLabel";
 
 export default function ElementAtom({
   element,
   position = [0, 0, 0],
-  radius = 0.5,
+  radius = ELEMENT_RADII[element],
   charge = 0,
   label,
 }: {
-  element: "H" | "Cl" | "Na";
+  element: "H" | "Cl" | "Na" | "C" | "O";
   position?: [number, number, number];
   radius?: number;
   charge?: number;
@@ -18,7 +18,7 @@ export default function ElementAtom({
 }) {
   const color = COLORS[element];
   return (
-    <group position={position as any}>
+    <group position={position}>
       <mesh>
         <sphereGeometry args={[radius, 48, 48]} />
         <meshStandardMaterial color={color} metalness={0.2} roughness={0.5} />

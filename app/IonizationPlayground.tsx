@@ -8,12 +8,15 @@ import DiatomicSceneExt from "./ionization/scenes/DiatomicScene";
 import IonicDissociationScene from "./ionization/scenes/IonicDissociationScene";
 import { COMPOUND_LIBRARY as LIB, CompoundKey } from "./ionization/constants";
 import "./ionization/polyfills/canvasRoundRect";
+import { VisualSettingsProvider } from "./ionization/VisualSettingsContext";
 
 export default function IonizationPlayground() {
   const [compound, setCompound] = useState<CompoundKey>("HCl");
   const [deltaEN, setDeltaEN] = useState(1.0);
   const [ionize, setIonize] = useState(false);
   const [showWater, setShowWater] = useState(true);
+  const [showResonanceGlow, setShowResonanceGlow] = useState(true);
+  const [showLonePairs, setShowLonePairs] = useState(true);
   const isDiatomic = compound === "HCl" || compound === "NaCl";
   const presetEN = compound === "HCl" ? 0.9 : compound === "NaCl" ? 2.1 : 2.0;
   return (
@@ -92,6 +95,27 @@ export default function IonizationPlayground() {
             </label>
           </div>
 
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={showResonanceGlow}
+                onChange={(e) => setShowResonanceGlow(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300"
+              />
+              共鳴グローを表示
+            </label>
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={showLonePairs}
+                onChange={(e) => setShowLonePairs(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300"
+              />
+              孤立電子対を表示
+            </label>
+          </div>
+
           <div className="flex gap-2">
             <button
               className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm hover:bg-slate-50"
@@ -131,23 +155,25 @@ export default function IonizationPlayground() {
       <div className="lg:col-span-3 relative shadow-2xl bg-white rounded-2xl border border-slate-200">
         <div className="p-0 h-[70vh] lg:h-full rounded-2xl overflow-hidden">
           <Canvas camera={{ position: [0, 1.6, 5], fov: 50 }} shadows>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[5, 6, 5]} intensity={0.9} castShadow />
-            {isDiatomic ? (
-              <DiatomicSceneExt
-                compound={compound as "HCl" | "NaCl"}
-                deltaEN={deltaEN}
-                ionize={ionize}
-                showWater={showWater}
-              />
-            ) : (
-              <IonicDissociationScene ions={LIB[compound]!} showWater={showWater} />
-            )}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.1, 0]} receiveShadow>
-              <planeGeometry args={[30, 30]} />
-              <shadowMaterial opacity={0.15} />
-            </mesh>
-            <OrbitControls enablePan enableRotate enableZoom />
+            <VisualSettingsProvider value={{ showResonanceGlow, showLonePairs }}>
+              <ambientLight intensity={0.5} />
+              <directionalLight position={[5, 6, 5]} intensity={0.9} castShadow />
+              {isDiatomic ? (
+                <DiatomicSceneExt
+                  compound={compound as "HCl" | "NaCl"}
+                  deltaEN={deltaEN}
+                  ionize={ionize}
+                  showWater={showWater}
+                />
+              ) : (
+                <IonicDissociationScene ions={LIB[compound]!} showWater={showWater} />
+              )}
+              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.1, 0]} receiveShadow>
+                <planeGeometry args={[30, 30]} />
+                <shadowMaterial opacity={0.15} />
+              </mesh>
+              <OrbitControls enablePan enableRotate enableZoom />
+            </VisualSettingsProvider>
           </Canvas>
         </div>
         <motion.div
